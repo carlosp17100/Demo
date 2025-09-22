@@ -8,7 +8,8 @@ on:
       - feature/**
       - fix/**
       - chore/**
-      
+      - hotfix/**
+
 
 jobs:
   build-test:
