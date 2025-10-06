@@ -94,11 +94,13 @@ builder.Services.AddHttpClient<IFakeStoreApiService, FakeStoreApiService>(client
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
 // Authentication Services
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -152,7 +154,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TechTrendEmporium.Api", Version = "v1" });
-    
+    c.EnableAnnotations();
+
     // Añade la definición de seguridad para Bearer (JWT)
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
