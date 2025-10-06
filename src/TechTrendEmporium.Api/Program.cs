@@ -94,12 +94,20 @@ builder.Services.AddHttpClient<IFakeStoreApiService, FakeStoreApiService>(client
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+<<<<<<< HEAD
+=======
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>(); //IA: Agregar registro de WishlistRepository
+>>>>>>> upstream/main
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+<<<<<<< HEAD
+=======
+builder.Services.AddScoped<IWishlistService, WishlistService>(); //IA: Agregar registro de WishlistService
+>>>>>>> upstream/main
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
 // Authentication Services
