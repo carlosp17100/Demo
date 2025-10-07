@@ -31,7 +31,7 @@ if (builder.Environment.IsDevelopment())
 else
 {
     // En producción, usar la conexión de Azure desde múltiples fuentes
-    connectionString = 
+    connectionString =
         builder.Configuration["ConnectionStrings:ProductionConnection"] // User Secrets (local testing)
         ?? builder.Configuration.GetConnectionString("ProductionConnection") // User Secrets (local testing)
         ?? builder.Configuration.GetConnectionString("DefaultConnection") // Azure App Service Connection String
@@ -40,10 +40,10 @@ else
         ?? Environment.GetEnvironmentVariable("SQLCONNSTR_ProductionConnection")
         ?? Environment.GetEnvironmentVariable("SQLCONNSTR_DefaultConnection")
         ?? Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection");
-    
+
     Console.WriteLine($"[PRODUCTION] Using Azure database");
     Console.WriteLine($"[DEBUG] Connection string found: {!string.IsNullOrEmpty(connectionString)}");
-    
+
     // Debug adicional para Azure App Service
     if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
     {
@@ -63,7 +63,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
             Console.WriteLine($"  {item.Key} = {(item.Value?.Length > 0 ? "[SET]" : "[EMPTY]")}");
         }
     }
-    
+
     throw new InvalidOperationException(
         "No se encontró la cadena de conexión. " +
         "Define la Connection String apropiada para el entorno actual.");
@@ -84,7 +84,7 @@ builder.Services.AddHttpClient<IFakeStoreApiService, FakeStoreApiService>(client
     var fakeStoreConfig = builder.Configuration.GetSection("FakeStoreApi");
     var baseUrl = fakeStoreConfig["BaseUrl"] ?? "https://fakestoreapi.com";
     var timeoutSeconds = fakeStoreConfig.GetValue<int>("TimeoutSeconds", 30);
-    
+
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 });
@@ -94,20 +94,14 @@ builder.Services.AddHttpClient<IFakeStoreApiService, FakeStoreApiService>(client
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-<<<<<<< HEAD
-=======
-builder.Services.AddScoped<IWishlistRepository, WishlistRepository>(); //IA: Agregar registro de WishlistRepository
->>>>>>> upstream/main
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>(); // registro Wishlist
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-<<<<<<< HEAD
-=======
-builder.Services.AddScoped<IWishlistService, WishlistService>(); //IA: Agregar registro de WishlistService
->>>>>>> upstream/main
+builder.Services.AddScoped<IWishlistService, WishlistService>(); // servicio Wishlist
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
 // Authentication Services
@@ -116,8 +110,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 // === Configuración de Autenticación JWT ===
 // Obtener la clave JWT de múltiples ubicaciones para compatibilidad con Azure
-var jwtKey = configuration["Jwt:Key"] 
-          ?? configuration["Jwt_Key"] 
+var jwtKey = configuration["Jwt:Key"]
+          ?? configuration["Jwt_Key"]
           ?? Environment.GetEnvironmentVariable("Jwt_Key")
           ?? Environment.GetEnvironmentVariable("Jwt__Key");
 
@@ -173,7 +167,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -198,7 +192,7 @@ if (builder.Configuration.GetValue<bool>("EF:ApplyMigrationsOnStartup"))
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
         logger.LogInformation("Setting up database...");
-        
+
         // Para desarrollo, usar EnsureCreated es más simple
         if (builder.Environment.IsDevelopment())
         {
@@ -239,10 +233,10 @@ if (builder.Configuration.GetValue<bool>("EnsureSystemUser", true))
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        
+
         var systemUserId = new Guid("00000000-0000-0000-0000-000000000001");
         var systemUser = await context.Users.FindAsync(systemUserId);
-        
+
         if (systemUser == null)
         {
             systemUser = new Data.Entities.User
@@ -255,7 +249,7 @@ if (builder.Configuration.GetValue<bool>("EnsureSystemUser", true))
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
-            
+
             context.Users.Add(systemUser);
             await context.SaveChangesAsync();
             logger.LogInformation("System user created successfully");
