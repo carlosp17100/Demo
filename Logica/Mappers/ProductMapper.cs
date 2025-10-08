@@ -1,30 +1,36 @@
-﻿using Data.Entities;
-using Logica.Models;
+﻿using System;
+using System.Linq;
+using Data.Entities;
+using Logica.Models;                 // RatingDto, ProductSummaryDto
 using Logica.Models.Category;
-using Logica.Models.Products;
+using Logica.Models.Products;       // ProductDto, ProductCreateDto, ProductUpdateDto, CartDto, CartItemDto
 
 namespace Logica.Mappers
 {
     /// <summary>
-    /// Mapper para convertir entre Entidades de dominio y DTOs de dominio
+    /// Mapper entre entidades de dominio y DTOs.
     /// </summary>
     public static class ProductMapper
     {
+        // ================== PRODUCTO ==================
+
         public static ProductDto ToProductDto(this Product product)
         {
-            return new ProductDto   
+            return new ProductDto
             {
-                Id = product.Id, // ✅ Usar directamente el GUID
+                Id = product.Id,
                 Title = product.Title,
                 Price = product.Price,
                 Description = product.Description ?? string.Empty,
                 Category = product.Category?.Name ?? string.Empty,
                 Image = product.ImageUrl ?? string.Empty,
-                Rating = product.RatingCount > 0 ? new RatingDto
-                {
-                    Rate = (double)product.RatingAverage,
-                    Count = product.RatingCount
-                } : null
+                Rating = product.RatingCount > 0
+                                ? new RatingDto
+                                {
+                                    Rate = (double)product.RatingAverage,
+                                    Count = product.RatingCount
+                                }
+                                : null
             };
         }
 
@@ -43,61 +49,39 @@ namespace Logica.Mappers
 
         public static void UpdateProduct(this Product product, ProductUpdateDto updateDto)
         {
-            if (!string.IsNullOrEmpty(updateDto.Title))
+            if (!string.IsNullOrWhiteSpace(updateDto.Title))
                 product.Title = updateDto.Title;
-            
+
             if (updateDto.Price.HasValue)
                 product.Price = updateDto.Price.Value;
-            
-            if (!string.IsNullOrEmpty(updateDto.Description))
+
+            if (!string.IsNullOrWhiteSpace(updateDto.Description))
                 product.Description = updateDto.Description;
-            
-            if (!string.IsNullOrEmpty(updateDto.Image))
+
+            if (!string.IsNullOrWhiteSpace(updateDto.Image))
                 product.ImageUrl = updateDto.Image;
-            
-            // Handle Rating updates
-            if (updateDto.Rating != null)
+
+            // Rating opcional
+            if (updateDto.Rating is not null)
             {
                 product.RatingAverage = (decimal)updateDto.Rating.Rate;
                 product.RatingCount = updateDto.Rating.Count;
             }
-            
-            // Handle Inventory updates
-            if (updateDto.Inventory != null)
+
+            // Inventario opcional
+            if (updateDto.Inventory is not null)
             {
                 product.InventoryTotal = updateDto.Inventory.Total;
                 product.InventoryAvailable = updateDto.Inventory.Available;
             }
-            
+
             product.UpdatedAt = DateTime.UtcNow;
         }
 
-        public static CartDto ToCartDto(this Cart cart)
-        {
-            return new CartDto
-            {
-                Id = cart.Id,
-                UserId = cart.UserId.ToString(),
-                ShoppingCart = cart.CartItems?.Select(ci => ConvertGuidToInt(ci.ProductId)).ToList() ?? new List<int>(),
-                CouponApplied = cart.AppliedCoupon != null ? new CouponAppliedDto
-                {
-                    CouponCode = cart.AppliedCoupon.Code,
-                    DiscountPercentage = cart.AppliedCoupon.DiscountPercentage
-                } : null,
-                TotalBeforeDiscount = cart.TotalBeforeDiscount,
-                TotalAfterDiscount = cart.TotalBeforeDiscount - cart.DiscountAmount,
-                ShippingCost = cart.ShippingCost,
-                FinalTotal = cart.FinalTotal
-            };
-        }
+        // ================== RESUMEN ==================
 
-        private static int ConvertGuidToInt(Guid guid)
-        {
-            var bytes = guid.ToByteArray();
-            return BitConverter.ToInt32(bytes, 0);
-        }
-
-        public static ProductSummaryDto ToSummaryDto(Product product)
+        /// <summary>Resumen corto para listados por usuario.</summary>
+        public static ProductSummaryDto ToSummaryDto(this Product product)
         {
             return new ProductSummaryDto
             {
@@ -107,5 +91,52 @@ namespace Logica.Mappers
                 Category = product.Category?.Name ?? "Sin categoría"
             };
         }
+
+        // ================== CARRITO (si aplica) ==================
+
+        public static CartDto ToCartDto(this Cart cart)
+        {
+            return new CartDto
+            {
+                Id = cart.Id,
+                UserId = cart.UserId,
+                Status = cart.Status.ToString(),
+                TotalBeforeDiscount = cart.TotalBeforeDiscount,
+                DiscountAmount = cart.DiscountAmount,
+                ShippingCost = cart.ShippingCost,
+                FinalTotal = cart.FinalTotal,
+                CreatedAt = cart.CreatedAt,
+                CouponCode = cart.AppliedCoupon?.Code,
+                Products = cart.CartItems?.Select(ci => new CartItemDto
+                {
+                    ProductId = ci.ProductId,
+                    Quantity = ci.Quantity,
+                    ProductTitle = ci.TitleSnapshot,
+                    UnitPrice = ci.UnitPriceSnapshot,
+                    ProductImage = ci.ImageUrlSnapshot,
+                    TotalPrice = ci.UnitPriceSnapshot * ci.Quantity
+                }).ToList() ?? new System.Collections.Generic.List<CartItemDto>()
+            };
+        }
+
+        // ===== LIST ITEM (para vitrina / store) =====
+        public static ProductListItemDto ToListItemDto(this Product product)
+        {
+            return new ProductListItemDto
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Price = product.Price,
+                Description = product.Description ?? string.Empty,
+                Category = product.Category?.Name ?? string.Empty,
+                Image = product.ImageUrl ?? string.Empty,
+                Rating = new RatingDto
+                {
+                    Rate = (double)product.RatingAverage, // decimal(2,1) -> double
+                    Count = product.RatingCount
+                }
+            };
+        }
+
     }
 }
