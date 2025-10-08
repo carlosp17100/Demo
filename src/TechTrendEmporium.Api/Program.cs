@@ -96,6 +96,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IWishlistRepository, WishlistRepository>(); // registro Wishlist
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IExternalMappingRepository, ExternalMappingRepository>(); // 👈 FALTABA
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -103,6 +105,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IWishlistService, WishlistService>(); // servicio Wishlist
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 //  Store / Listing (F01 Product Display Page)
 builder.Services.AddScoped<IStoreService, StoreService>();

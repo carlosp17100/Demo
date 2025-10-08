@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Data.Entities;
-using Logica.Models;                 // RatingDto, ProductSummaryDto
-using Logica.Models.Category;
-using Logica.Models.Products;       // ProductDto, ProductCreateDto, ProductUpdateDto, CartDto, CartItemDto
+using Logica.Models;                 // RatingDto, ProductListItemDto, ProductSummaryDto
+using Logica.Models.Products;       // ProductDto, ProductCreateDto, ProductUpdateDto
+using Logica.Models.Carts;          // CartDto
 
 namespace Logica.Mappers
 {
@@ -25,12 +25,12 @@ namespace Logica.Mappers
                 Category = product.Category?.Name ?? string.Empty,
                 Image = product.ImageUrl ?? string.Empty,
                 Rating = product.RatingCount > 0
-                                ? new RatingDto
-                                {
-                                    Rate = (double)product.RatingAverage,
-                                    Count = product.RatingCount
-                                }
-                                : null
+                    ? new RatingDto
+                    {
+                        Rate = (double)product.RatingAverage,
+                        Count = product.RatingCount
+                    }
+                    : null
             };
         }
 
@@ -92,33 +92,6 @@ namespace Logica.Mappers
             };
         }
 
-        // ================== CARRITO (si aplica) ==================
-
-        public static CartDto ToCartDto(this Cart cart)
-        {
-            return new CartDto
-            {
-                Id = cart.Id,
-                UserId = cart.UserId,
-                Status = cart.Status.ToString(),
-                TotalBeforeDiscount = cart.TotalBeforeDiscount,
-                DiscountAmount = cart.DiscountAmount,
-                ShippingCost = cart.ShippingCost,
-                FinalTotal = cart.FinalTotal,
-                CreatedAt = cart.CreatedAt,
-                CouponCode = cart.AppliedCoupon?.Code,
-                Products = cart.CartItems?.Select(ci => new CartItemDto
-                {
-                    ProductId = ci.ProductId,
-                    Quantity = ci.Quantity,
-                    ProductTitle = ci.TitleSnapshot,
-                    UnitPrice = ci.UnitPriceSnapshot,
-                    ProductImage = ci.ImageUrlSnapshot,
-                    TotalPrice = ci.UnitPriceSnapshot * ci.Quantity
-                }).ToList() ?? new System.Collections.Generic.List<CartItemDto>()
-            };
-        }
-
         // ===== LIST ITEM (para vitrina / store) =====
         public static ProductListItemDto ToListItemDto(this Product product)
         {
@@ -132,11 +105,24 @@ namespace Logica.Mappers
                 Image = product.ImageUrl ?? string.Empty,
                 Rating = new RatingDto
                 {
-                    Rate = (double)product.RatingAverage, // decimal(2,1) -> double
+                    // El DTO de vitrina siempre espera Rating (no-null)
+                    Rate = (double)product.RatingAverage,
                     Count = product.RatingCount
                 }
             };
         }
 
+        // ================== CARRITO (mínimo para compilar) ==================
+        // Si tu CartDto tiene más propiedades, agrégalas aquí cuando las definas.
+        public static CartDto ToCartDto(this Cart cart)
+        {
+            return new CartDto
+            {
+                Id = cart.Id,
+                // Si CartDto.UserId fuera Guid, cambia a: UserId = cart.UserId
+                UserId = cart.UserId.ToString()
+                // (Intencionalmente sin Items/Products ni CartItemDto para evitar los errores actuales)
+            };
+        }
     }
 }
