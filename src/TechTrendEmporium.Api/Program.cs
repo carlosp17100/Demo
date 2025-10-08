@@ -104,6 +104,9 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IWishlistService, WishlistService>(); // servicio Wishlist
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
+//  Store / Listing (F01 Product Display Page)
+builder.Services.AddScoped<IStoreService, StoreService>();
+
 // Authentication Services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
