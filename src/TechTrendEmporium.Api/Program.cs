@@ -110,6 +110,9 @@ builder.Services.AddScoped<ICartService, CartService>();
 //  Store / Listing (F01 Product Display Page)
 builder.Services.AddScoped<IStoreService, StoreService>();
 
+//  Store / Listing (F01 Product Display Page)
+builder.Services.AddScoped<IStoreService, StoreService>();
+
 // Authentication Services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
