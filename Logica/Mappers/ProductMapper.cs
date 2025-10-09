@@ -1,11 +1,9 @@
-﻿using Data.Entities;
+using Data.Entities;
 using Logica.Models;
-using Logica.Models.Category;
 using Logica.Models.Products;
 
 namespace Logica.Mappers
 {
-  
     public static class ProductMapper
     {
         public static ProductDto ToProductDto(this Product product)
@@ -92,7 +90,8 @@ namespace Logica.Mappers
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        public static ProductSummaryDto ToSummaryDto(Product product)
+        // ✅ CAMBIAR A EXTENSION METHOD (agregar 'this')
+        public static ProductSummaryDto ToSummaryDto(this Product product)
         {
             return new ProductSummaryDto
             {
@@ -100,6 +99,25 @@ namespace Logica.Mappers
                 Title = product.Title,
                 Price = product.Price,
                 Category = product.Category?.Name ?? "No category"
+            };
+        }
+
+        // ✅ AGREGAR EL MÉTODO FALTANTE ToListItemDto
+        public static ProductListItemDto ToListItemDto(this Product product)
+        {
+            return new ProductListItemDto
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Price = product.Price,
+                Description = product.Description ?? string.Empty,
+                Category = product.Category?.Name ?? string.Empty,
+                Image = product.ImageUrl ?? string.Empty,
+                Rating = new RatingDto
+                {
+                    Rate = (double)product.RatingAverage,
+                    Count = product.RatingCount
+                }
             };
         }
     }

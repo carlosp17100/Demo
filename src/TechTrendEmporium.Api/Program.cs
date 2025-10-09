@@ -40,7 +40,7 @@ else
         ?? Environment.GetEnvironmentVariable("SQLCONNSTR_ProductionConnection")
         ?? Environment.GetEnvironmentVariable("SQLCONNSTR_DefaultConnection")
         ?? Environment.GetEnvironmentVariable("CUSTOMCONNSTR_DefaultConnection");
-    
+
     Console.WriteLine($"[PRODUCTION] Using Azure database");
     Console.WriteLine($"[DEBUG] Connection string found: {!string.IsNullOrEmpty(connectionString)}");
     
@@ -63,7 +63,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
             Console.WriteLine($"  {item.Key} = {(item.Value?.Length > 0 ? "[SET]" : "[EMPTY]")}");
         }
     }
-    
+
     throw new InvalidOperationException(
         "Connection string not found. " +
         "Define the appropriate Connection String for the current environment.");
@@ -84,7 +84,7 @@ builder.Services.AddHttpClient<IFakeStoreApiService, FakeStoreApiService>(client
     var fakeStoreConfig = builder.Configuration.GetSection("FakeStoreApi");
     var baseUrl = fakeStoreConfig["BaseUrl"] ?? "https://fakestoreapi.com";
     var timeoutSeconds = fakeStoreConfig.GetValue<int>("TimeoutSeconds", 30);
-    
+
     client.BaseAddress = new Uri(baseUrl);
     client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 });
@@ -94,17 +94,21 @@ builder.Services.AddHttpClient<IFakeStoreApiService, FakeStoreApiService>(client
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IWishlistRepository, WishlistRepository>(); 
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>(); // registro Wishlist
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-builder.Services.AddScoped<ICartRepository, CartRepository>(); 
-builder.Services.AddScoped<IExternalMappingRepository, ExternalMappingRepository>(); 
+builder.Services.AddScoped<IExternalMappingRepository, ExternalMappingRepository>(); // 👈 FALTABA
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IWishlistService, WishlistService>(); 
+builder.Services.AddScoped<IWishlistService, WishlistService>(); // servicio Wishlist
 builder.Services.AddScoped<IReviewService, ReviewService>();
-builder.Services.AddScoped<ICartService, CartService>(); 
+builder.Services.AddScoped<ICartService, CartService>();
+
+//  Store / Listing (F01 Product Display Page)
+builder.Services.AddScoped<IStoreService, StoreService>();
 
 // Authentication Services
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -169,7 +173,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -235,10 +239,10 @@ if (builder.Configuration.GetValue<bool>("EnsureSystemUser", true))
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        
+
         var systemUserId = new Guid("00000000-0000-0000-0000-000000000001");
         var systemUser = await context.Users.FindAsync(systemUserId);
-        
+
         if (systemUser == null)
         {
             systemUser = new Data.Entities.User
@@ -251,7 +255,7 @@ if (builder.Configuration.GetValue<bool>("EnsureSystemUser", true))
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
-            
+
             context.Users.Add(systemUser);
             await context.SaveChangesAsync();
             logger.LogInformation("System user created successfully");
