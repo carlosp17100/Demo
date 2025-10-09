@@ -85,8 +85,9 @@ namespace Logica.Services
 
                 await tx.CommitAsync(ct);
 
-                return saved.ToDto();
-            });
+            var saved = await _reviews.AddAsync(entity, ct);
+
+            return saved.ToDto();
         }
     }
 }
