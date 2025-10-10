@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Linq;
 using Data.Entities;
-using Logica.Models;                 // RatingDto, ProductSummaryDto
+using Logica.Models;
 using Logica.Models.Category;
-using Logica.Models.Products;       // ProductDto, ProductCreateDto, ProductUpdateDto, CartDto, CartItemDto
+using Logica.Models.Products;
 
 namespace Logica.Mappers
 {
     /// <summary>
-    /// Mapper entre entidades de dominio y DTOs.
+    /// Mapper para convertir entre Entidades de dominio y DTOs de dominio
     /// </summary>
     public static class ProductMapper
     {
@@ -18,19 +18,19 @@ namespace Logica.Mappers
         {
             return new ProductDto
             {
-                Id = product.Id,
+                Id = product.Id, // ✅ Use GUID directly
                 Title = product.Title,
                 Price = product.Price,
                 Description = product.Description ?? string.Empty,
                 Category = product.Category?.Name ?? string.Empty,
                 Image = product.ImageUrl ?? string.Empty,
-                Rating = product.RatingCount > 0
-                                ? new RatingDto
-                                {
-                                    Rate = (double)product.RatingAverage,
-                                    Count = product.RatingCount
-                                }
-                                : null
+                InventoryTotal = product.InventoryTotal,
+                InventoryAvailable = product.InventoryAvailable,
+                Rating = new RatingDto
+                {
+                    Rate = (double)product.RatingAverage,
+                    Count = product.RatingCount
+                }
             };
         }
 
@@ -40,8 +40,10 @@ namespace Logica.Mappers
             {
                 Title = createDto.Title,
                 Price = createDto.Price,
-                Description = createDto.Description,
-                ImageUrl = createDto.Image,
+                Description = createDto.Description ?? string.Empty,
+                ImageUrl = createDto.ImageUrl,
+                InventoryTotal = createDto.InventoryTotal,
+                InventoryAvailable = createDto.InventoryAvailable,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -57,24 +59,17 @@ namespace Logica.Mappers
 
             if (!string.IsNullOrWhiteSpace(updateDto.Description))
                 product.Description = updateDto.Description;
+            
+            if (!string.IsNullOrEmpty(updateDto.ImageUrl))
+                product.ImageUrl = updateDto.ImageUrl;
+            
+            // ✅ ACTUALIZAR CAMPOS DE INVENTARIO SI SE PROPORCIONAN
+            if (updateDto.InventoryTotal.HasValue)
+                product.InventoryTotal = updateDto.InventoryTotal.Value;
 
-            if (!string.IsNullOrWhiteSpace(updateDto.Image))
-                product.ImageUrl = updateDto.Image;
-
-            // Rating opcional
-            if (updateDto.Rating is not null)
-            {
-                product.RatingAverage = (decimal)updateDto.Rating.Rate;
-                product.RatingCount = updateDto.Rating.Count;
-            }
-
-            // Inventario opcional
-            if (updateDto.Inventory is not null)
-            {
-                product.InventoryTotal = updateDto.Inventory.Total;
-                product.InventoryAvailable = updateDto.Inventory.Available;
-            }
-
+            if (updateDto.InventoryAvailable.HasValue)
+                product.InventoryAvailable = updateDto.InventoryAvailable.Value;
+            
             product.UpdatedAt = DateTime.UtcNow;
         }
 
@@ -99,27 +94,39 @@ namespace Logica.Mappers
             return new CartDto
             {
                 Id = cart.Id,
-                UserId = cart.UserId,
-                Status = cart.Status.ToString(),
-                TotalBeforeDiscount = cart.TotalBeforeDiscount,
-                DiscountAmount = cart.DiscountAmount,
-                ShippingCost = cart.ShippingCost,
-                FinalTotal = cart.FinalTotal,
-                CreatedAt = cart.CreatedAt,
-                CouponCode = cart.AppliedCoupon?.Code,
-                Products = cart.CartItems?.Select(ci => new CartItemDto
+                UserId = cart.UserId.ToString(),
+                ShoppingCart = cart.CartItems?.Select(ci => ConvertGuidToInt(ci.ProductId)).ToList() ?? new List<int>(),
+                CouponApplied = cart.AppliedCoupon != null ? new CouponAppliedDto
                 {
-                    ProductId = ci.ProductId,
-                    Quantity = ci.Quantity,
-                    ProductTitle = ci.TitleSnapshot,
-                    UnitPrice = ci.UnitPriceSnapshot,
-                    ProductImage = ci.ImageUrlSnapshot,
-                    TotalPrice = ci.UnitPriceSnapshot * ci.Quantity
-                }).ToList() ?? new System.Collections.Generic.List<CartItemDto>()
+                    CouponCode = cart.AppliedCoupon.Code,
+                    DiscountPercentage = cart.AppliedCoupon.DiscountPercentage
+                } : null,
+                TotalBeforeDiscount = cart.TotalBeforeDiscount,
+                TotalAfterDiscount = cart.TotalBeforeDiscount - cart.DiscountAmount,
+                ShippingCost = cart.ShippingCost,
+                FinalTotal = cart.FinalTotal
             };
         }
 
-        // ===== LIST ITEM (para vitrina / store) =====
+        private static int ConvertGuidToInt(Guid guid)
+        {
+            var bytes = guid.ToByteArray();
+            return BitConverter.ToInt32(bytes, 0);
+        }
+
+        // ✅ CAMBIAR A EXTENSION METHOD (agregar 'this')
+        public static ProductSummaryDto ToSummaryDto(this Product product)
+        {
+            return new ProductListItemDto
+            {
+                Id = product.Id,
+                Title = product.Title,
+                Price = product.Price,
+                Category = product.Category?.Name ?? "No category"
+            };
+        }
+
+        // ✅ AGREGAR EL MÉTODO FALTANTE ToListItemDto
         public static ProductListItemDto ToListItemDto(this Product product)
         {
             return new ProductListItemDto
@@ -132,7 +139,7 @@ namespace Logica.Mappers
                 Image = product.ImageUrl ?? string.Empty,
                 Rating = new RatingDto
                 {
-                    Rate = (double)product.RatingAverage, // decimal(2,1) -> double
+                    Rate = (double)product.RatingAverage,
                     Count = product.RatingCount
                 }
             };

@@ -580,6 +580,11 @@ namespace Data.Migrations
                     b.Property<DateTime?>("LastLoginAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(255)
