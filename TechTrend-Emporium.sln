@@ -11,6 +11,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logica", "Logica\Logica.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "External", "External\External.csproj", "{028F47F4-898D-4FFE-99B6-902C24B2C2BB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechTrendEmporium.UnitTests", "tests\TechTrendEmporium.UnitTests\TechTrendEmporium.UnitTests.csproj", "{5DF51964-953C-49BE-BF02-4D4A06CA51A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mapper", "Mapper", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		ProductMapperTests.cs = ProductMapperTests.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{EEE02F21-5A72-4139-ACD8-12FFDC3E0E2D}"
+	ProjectSection(SolutionItems) = preProject
+		StoreServiceTests.cs = StoreServiceTests.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Validation", "Validation", "{22F4BD63-7625-4EA6-9532-3F3504C0E8AA}"
+	ProjectSection(SolutionItems) = preProject
+		ProductQueryEnumNumericBindingTests.cs = ProductQueryEnumNumericBindingTests.cs
+		ProductQueryValidationTests.cs = ProductQueryValidationTests.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,9 +89,27 @@ Global
 		{028F47F4-898D-4FFE-99B6-902C24B2C2BB}.Release|x64.Build.0 = Release|Any CPU
 		{028F47F4-898D-4FFE-99B6-902C24B2C2BB}.Release|x86.ActiveCfg = Release|Any CPU
 		{028F47F4-898D-4FFE-99B6-902C24B2C2BB}.Release|x86.Build.0 = Release|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Debug|x64.Build.0 = Debug|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Debug|x86.Build.0 = Debug|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Release|x64.ActiveCfg = Release|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Release|x64.Build.0 = Release|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5DF51964-953C-49BE-BF02-4D4A06CA51A1} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{EEE02F21-5A72-4139-ACD8-12FFDC3E0E2D} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{22F4BD63-7625-4EA6-9532-3F3504C0E8AA} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39AB18FE-B4EF-4329-BEA1-9F5A990CCBBC}

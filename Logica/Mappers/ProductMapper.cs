@@ -10,14 +10,12 @@ namespace Logica.Mappers
         {
             return new ProductDto
             {
-                Id = product.Id, // ✅ Use GUID directly
+                Id = product.Id,
                 Title = product.Title,
                 Price = product.Price,
                 Description = product.Description ?? string.Empty,
                 Category = product.Category?.Name ?? string.Empty,
                 Image = product.ImageUrl ?? string.Empty,
-                InventoryTotal = product.InventoryTotal,
-                InventoryAvailable = product.InventoryAvailable,
                 Rating = new RatingDto
                 {
                     Rate = (double)product.RatingAverage,
@@ -33,9 +31,11 @@ namespace Logica.Mappers
                 Title = createDto.Title,
                 Price = createDto.Price,
                 Description = createDto.Description ?? string.Empty,
-                ImageUrl = createDto.ImageUrl,
-                InventoryTotal = createDto.InventoryTotal,
-                InventoryAvailable = createDto.InventoryAvailable,
+                // DTO usa Image, entidad usa ImageUrl
+                ImageUrl = createDto.Image,
+                // Los DTOs no exponen inventario; si luego existen, descomenta y mapea aquí
+                //InventoryTotal      = createDto.InventoryTotal,
+                //InventoryAvailable  = createDto.InventoryAvailable,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -43,24 +43,24 @@ namespace Logica.Mappers
 
         public static void UpdateProduct(this Product product, ProductUpdateDto updateDto)
         {
-            if (!string.IsNullOrEmpty(updateDto.Title))
+            if (!string.IsNullOrWhiteSpace(updateDto.Title))
                 product.Title = updateDto.Title;
 
             if (updateDto.Price.HasValue)
                 product.Price = updateDto.Price.Value;
 
-            if (!string.IsNullOrEmpty(updateDto.Description))
+            if (!string.IsNullOrWhiteSpace(updateDto.Description))
                 product.Description = updateDto.Description;
 
-            if (!string.IsNullOrEmpty(updateDto.ImageUrl))
-                product.ImageUrl = updateDto.ImageUrl;
+            // DTO usa Image, entidad usa ImageUrl
+            if (!string.IsNullOrWhiteSpace(updateDto.Image))
+                product.ImageUrl = updateDto.Image;
 
-            // ✅ ACTUALIZAR CAMPOS DE INVENTARIO SI SE PROPORCIONAN
-            if (updateDto.InventoryTotal.HasValue)
-                product.InventoryTotal = updateDto.InventoryTotal.Value;
-
-            if (updateDto.InventoryAvailable.HasValue)
-                product.InventoryAvailable = updateDto.InventoryAvailable.Value;
+            // Si en el futuro el DTO trae inventario, habilita:
+            //if (updateDto.InventoryTotal.HasValue)
+            //    product.InventoryTotal = updateDto.InventoryTotal.Value;
+            //if (updateDto.InventoryAvailable.HasValue)
+            //    product.InventoryAvailable = updateDto.InventoryAvailable.Value;
 
             product.UpdatedAt = DateTime.UtcNow;
         }
@@ -90,7 +90,6 @@ namespace Logica.Mappers
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        // ✅ CAMBIAR A EXTENSION METHOD (agregar 'this')
         public static ProductSummaryDto ToSummaryDto(this Product product)
         {
             return new ProductSummaryDto
@@ -102,7 +101,6 @@ namespace Logica.Mappers
             };
         }
 
-        // ✅ AGREGAR EL MÉTODO FALTANTE ToListItemDto
         public static ProductListItemDto ToListItemDto(this Product product)
         {
             return new ProductListItemDto

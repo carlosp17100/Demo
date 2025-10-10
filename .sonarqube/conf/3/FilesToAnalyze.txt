@@ -1,0 +1,25 @@
+﻿C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\AuthController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\BaseController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\CartController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\CategoriesController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\DiagnosticsController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\ProductsController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\ReviewsController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\StoreController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\TestController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\UsersController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Controllers\WishlistController.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Program.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\obj\Debug\net8.0\TechTrendEmporium.Api.GlobalUsings.g.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\obj\Debug\net8.0\TechTrendEmporium.Api.AssemblyInfo.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\obj\Debug\net8.0\TechTrendEmporium.Api.MvcApplicationPartsAssemblyInfo.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\appsettings.Development.json
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\appsettings.json
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\appsettings.Production.json
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Back-End-TechTrend-Emporium.http
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Properties\launchSettings.json
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Properties\serviceDependencies.app-Emporium-BrazilSouth-dev-001 - Zip Deploy.json
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Properties\serviceDependencies.json
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Properties\serviceDependencies.local.json
+C:\Endava\EndevLocal\TechTrendFinal\Demo\src\TechTrendEmporium.Api\Properties\ServiceDependencies\app-Emporium-BrazilSouth-dev-001 - Zip Deploy\profile.arm.json

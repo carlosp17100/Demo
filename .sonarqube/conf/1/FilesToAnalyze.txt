@@ -1,0 +1,5 @@
+﻿C:\Endava\EndevLocal\TechTrendFinal\Demo\External\FakeStore\FakeStoreApiService.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\External\FakeStore\IFakeStoreApiService.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\External\FakeStore\Mappers\FakeStoreCartMapper.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\External\FakeStore\Mappers\FakeStoreMapper.cs
+C:\Endava\EndevLocal\TechTrendFinal\Demo\External\FakeStore\Models\FakeStoreModels.cs
