@@ -1,5 +1,6 @@
-﻿using Data.Entities;
+using Data.Entities;
 using Logica.Models;
+using Logica.Models.Category;
 using Logica.Models.Products;
 
 namespace Logica.Mappers
@@ -8,14 +9,16 @@ namespace Logica.Mappers
     {
         public static ProductDto ToProductDto(this Product product)
         {
-            return new ProductDto
+            return new ProductDto   
             {
-                Id = product.Id,
+                Id = product.Id, // ✅ Use GUID directly
                 Title = product.Title,
                 Price = product.Price,
                 Description = product.Description ?? string.Empty,
                 Category = product.Category?.Name ?? string.Empty,
                 Image = product.ImageUrl ?? string.Empty,
+                InventoryTotal = product.InventoryTotal,
+                InventoryAvailable = product.InventoryAvailable,
                 Rating = new RatingDto
                 {
                     Rate = (double)product.RatingAverage,
@@ -31,11 +34,9 @@ namespace Logica.Mappers
                 Title = createDto.Title,
                 Price = createDto.Price,
                 Description = createDto.Description ?? string.Empty,
-                // DTO usa Image, entidad usa ImageUrl
-                ImageUrl = createDto.Image,
-                // Los DTOs no exponen inventario; si luego existen, descomenta y mapea aquí
-                //InventoryTotal      = createDto.InventoryTotal,
-                //InventoryAvailable  = createDto.InventoryAvailable,
+                ImageUrl = createDto.ImageUrl,
+                InventoryTotal = createDto.InventoryTotal,
+                InventoryAvailable = createDto.InventoryAvailable,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -43,25 +44,25 @@ namespace Logica.Mappers
 
         public static void UpdateProduct(this Product product, ProductUpdateDto updateDto)
         {
-            if (!string.IsNullOrWhiteSpace(updateDto.Title))
+            if (!string.IsNullOrEmpty(updateDto.Title))
                 product.Title = updateDto.Title;
-
+            
             if (updateDto.Price.HasValue)
                 product.Price = updateDto.Price.Value;
-
-            if (!string.IsNullOrWhiteSpace(updateDto.Description))
+            
+            if (!string.IsNullOrEmpty(updateDto.Description))
                 product.Description = updateDto.Description;
+            
+            if (!string.IsNullOrEmpty(updateDto.ImageUrl))
+                product.ImageUrl = updateDto.ImageUrl;
+            
+            // ✅ ACTUALIZAR CAMPOS DE INVENTARIO SI SE PROPORCIONAN
+            if (updateDto.InventoryTotal.HasValue)
+                product.InventoryTotal = updateDto.InventoryTotal.Value;
 
-            // DTO usa Image, entidad usa ImageUrl
-            if (!string.IsNullOrWhiteSpace(updateDto.Image))
-                product.ImageUrl = updateDto.Image;
-
-            // Si en el futuro el DTO trae inventario, habilita:
-            //if (updateDto.InventoryTotal.HasValue)
-            //    product.InventoryTotal = updateDto.InventoryTotal.Value;
-            //if (updateDto.InventoryAvailable.HasValue)
-            //    product.InventoryAvailable = updateDto.InventoryAvailable.Value;
-
+            if (updateDto.InventoryAvailable.HasValue)
+                product.InventoryAvailable = updateDto.InventoryAvailable.Value;
+            
             product.UpdatedAt = DateTime.UtcNow;
         }
 
@@ -90,7 +91,7 @@ namespace Logica.Mappers
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        public static ProductSummaryDto ToSummaryDto(this Product product)
+        public static ProductSummaryDto ToSummaryDto(Product product)
         {
             return new ProductSummaryDto
             {
@@ -98,24 +99,6 @@ namespace Logica.Mappers
                 Title = product.Title,
                 Price = product.Price,
                 Category = product.Category?.Name ?? "No category"
-            };
-        }
-
-        public static ProductListItemDto ToListItemDto(this Product product)
-        {
-            return new ProductListItemDto
-            {
-                Id = product.Id,
-                Title = product.Title,
-                Price = product.Price,
-                Description = product.Description ?? string.Empty,
-                Category = product.Category?.Name ?? string.Empty,
-                Image = product.ImageUrl ?? string.Empty,
-                Rating = new RatingDto
-                {
-                    Rate = (double)product.RatingAverage,
-                    Count = product.RatingCount
-                }
             };
         }
     }
